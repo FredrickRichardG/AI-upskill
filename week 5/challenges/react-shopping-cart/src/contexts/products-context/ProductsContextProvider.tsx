@@ -11,6 +11,8 @@ export interface IProductsContext {
   setProducts(products: IProduct[]): void;
   filters: string[];
   setFilters(filters: string[]): void;
+  error: string | null;
+  setError(error: string | null): void;
 }
 
 const ProductsContext = createContext<IProductsContext | undefined>(undefined);
@@ -31,6 +33,7 @@ const ProductsProvider: FC = (props) => {
   const [allProducts, setAllProducts] = useState<IProduct[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [filters, setFilters] = useState<string[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const ProductContextValue: IProductsContext = {
     isFetching,
@@ -41,6 +44,8 @@ const ProductsProvider: FC = (props) => {
     setProducts,
     filters,
     setFilters,
+    error,
+    setError,
   };
 
   return <ProductsContext.Provider value={ProductContextValue} {...props} />;

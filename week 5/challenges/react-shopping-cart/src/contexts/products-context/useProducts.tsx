@@ -14,16 +14,23 @@ const useProducts = () => {
     setProducts,
     filters,
     setFilters,
+    error,
+    setError,
   } = useProductsContext();
 
-  const fetchProducts = useCallback(() => {
+  const fetchProducts = useCallback(async () => {
     setIsFetching(true);
-    getProducts().then((products: IProduct[]) => {
-      setIsFetching(false);
+    setError(null);
+    try {
+      const products = await getProducts();
       setAllProducts(products);
       setProducts(products);
-    });
-  }, [setIsFetching, setAllProducts, setProducts]);
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsFetching(false);
+    }
+  }, [setIsFetching, setAllProducts, setProducts, setError]);
 
   const filterProducts = useCallback(
     (filters: string[]) => {
@@ -52,6 +59,7 @@ const useProducts = () => {
     products,
     filterProducts,
     filters,
+    error,
   };
 };
 
