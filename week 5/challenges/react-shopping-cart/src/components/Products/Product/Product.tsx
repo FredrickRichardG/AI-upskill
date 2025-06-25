@@ -12,6 +12,15 @@ interface IProps {
   product: IProduct;
 }
 
+/**
+ * Product displays product details and allows adding to cart.
+ * @param {IProps} props - The product to display.
+ * @returns {JSX.Element}
+ * @example
+ * <Product product={product} />
+ * @performance
+ * Memoized with React.memo for performance.
+ */
 const Product = React.memo(({ product }: IProps) => {
   const { openCart, addProduct } = useCart();
   const {

@@ -4,6 +4,14 @@ import { useProductsContext } from './ProductsContextProvider';
 import { IProduct } from 'models';
 import { getProducts } from 'services/products';
 
+/**
+ * useProducts provides product state and actions from context.
+ * @returns {object} - Product state and actions.
+ * @example
+ * const { products, fetchProducts, filterProducts } = useProducts();
+ * @error
+ * Returns error string if fetching fails.
+ */
 const useProducts = () => {
   const {
     isFetching,
