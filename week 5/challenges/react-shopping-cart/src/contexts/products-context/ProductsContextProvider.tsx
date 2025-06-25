@@ -5,6 +5,8 @@ import { IProduct } from 'models';
 export interface IProductsContext {
   isFetching: boolean;
   setIsFetching(state: boolean): void;
+  allProducts: IProduct[];
+  setAllProducts(products: IProduct[]): void;
   products: IProduct[];
   setProducts(products: IProduct[]): void;
   filters: string[];
@@ -26,12 +28,15 @@ const useProductsContext = (): IProductsContext => {
 
 const ProductsProvider: FC = (props) => {
   const [isFetching, setIsFetching] = useState(false);
+  const [allProducts, setAllProducts] = useState<IProduct[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [filters, setFilters] = useState<string[]>([]);
 
   const ProductContextValue: IProductsContext = {
     isFetching,
     setIsFetching,
+    allProducts,
+    setAllProducts,
     products,
     setProducts,
     filters,

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useProductsContext } from './ProductsContextProvider';
 import { IProduct } from 'models';
@@ -8,6 +8,8 @@ const useProducts = () => {
   const {
     isFetching,
     setIsFetching,
+    allProducts,
+    setAllProducts,
     products,
     setProducts,
     filters,
@@ -18,31 +20,31 @@ const useProducts = () => {
     setIsFetching(true);
     getProducts().then((products: IProduct[]) => {
       setIsFetching(false);
+      setAllProducts(products);
       setProducts(products);
     });
-  }, [setIsFetching, setProducts]);
+  }, [setIsFetching, setAllProducts, setProducts]);
 
-  const filterProducts = (filters: string[]) => {
-    setIsFetching(true);
-
-    getProducts().then((products: IProduct[]) => {
-      setIsFetching(false);
+  const filterProducts = useCallback(
+    (filters: string[]) => {
+      console.time('filterProducts');
       let filteredProducts;
 
       if (filters && filters.length > 0) {
-        filteredProducts = products.filter((p: IProduct) =>
-          filters.find((filter: string) =>
-            p.availableSizes.find((size: string) => size === filter)
-          )
+        const filterSet = new Set(filters);
+        filteredProducts = allProducts.filter((p: IProduct) =>
+          p.availableSizes.some((size: string) => filterSet.has(size))
         );
       } else {
-        filteredProducts = products;
+        filteredProducts = allProducts;
       }
 
       setFilters(filters);
       setProducts(filteredProducts);
-    });
-  };
+      console.timeEnd('filterProducts');
+    },
+    [allProducts, setFilters, setProducts]
+  );
 
   return {
     isFetching,
