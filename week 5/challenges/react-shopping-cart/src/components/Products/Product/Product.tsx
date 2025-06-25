@@ -1,4 +1,5 @@
 import { KeyboardEvent } from 'react';
+import React from 'react';
 
 import formatPrice from 'utils/formatPrice';
 import { IProduct } from 'models';
@@ -11,7 +12,7 @@ interface IProps {
   product: IProduct;
 }
 
-const Product = ({ product }: IProps) => {
+const Product = React.memo(({ product }: IProps) => {
   const { openCart, addProduct } = useCart();
   const {
     sku,
@@ -70,6 +71,6 @@ const Product = ({ product }: IProps) => {
       </S.BuyButton>
     </S.Container>
   );
-};
+});
 
 export default Product;

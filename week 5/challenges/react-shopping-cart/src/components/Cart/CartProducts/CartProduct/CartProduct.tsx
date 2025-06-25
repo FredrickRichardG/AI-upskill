@@ -1,5 +1,6 @@
 import formatPrice from 'utils/formatPrice';
 import { ICartProduct } from 'models';
+import React from 'react';
 
 import { useCart } from 'contexts/cart-context';
 
@@ -8,7 +9,7 @@ import * as S from './style';
 interface IProps {
   product: ICartProduct;
 }
-const CartProduct = ({ product }: IProps) => {
+const CartProduct = React.memo(({ product }: IProps) => {
   const { removeProduct, increaseProductQuantity, decreaseProductQuantity } =
     useCart();
   const {
@@ -59,6 +60,6 @@ const CartProduct = ({ product }: IProps) => {
       </S.Price>
     </S.Container>
   );
-};
+});
 
 export default CartProduct;

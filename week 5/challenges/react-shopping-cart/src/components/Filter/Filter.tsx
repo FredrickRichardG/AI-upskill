@@ -7,18 +7,14 @@ export const availableSizes = ['XS', 'S', 'M', 'ML', 'L', 'XL', 'XXL'];
 const Filter = () => {
   const { filters, filterProducts } = useProducts();
 
-  const selectedCheckboxes = new Set(filters);
-
   const toggleCheckbox = (label: string) => {
+    const selectedCheckboxes = new Set(filters);
     if (selectedCheckboxes.has(label)) {
       selectedCheckboxes.delete(label);
     } else {
       selectedCheckboxes.add(label);
     }
-
-    const filters = Array.from(selectedCheckboxes) as [];
-
-    filterProducts(filters);
+    filterProducts(Array.from(selectedCheckboxes));
   };
 
   const createCheckbox = (label: string) => (
