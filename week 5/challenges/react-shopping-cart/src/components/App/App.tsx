@@ -12,7 +12,7 @@ import { useProducts } from 'contexts/products-context';
 import * as S from './style';
 
 function App() {
-  const { isFetching, products, fetchProducts } = useProducts();
+  const { isFetching, products, fetchProducts, error } = useProducts();
 
   useEffect(() => {
     fetchProducts();
@@ -20,6 +20,7 @@ function App() {
 
   return (
     <S.Container>
+      {error && <div style={{ color: 'red', margin: '1em 0' }}>{error}</div>}
       {isFetching && <Loader />}
       <GithubCorner />
       <Recruiter />

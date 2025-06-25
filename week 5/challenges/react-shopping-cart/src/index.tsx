@@ -11,6 +11,7 @@ import { ProductsProvider } from 'contexts/products-context';
 import { CartProvider } from 'contexts/cart-context';
 
 import App from 'components/App';
+import ErrorBoundary from 'components/ErrorBoundary/ErrorBoundary';
 
 const root = document.getElementById('root')!;
 const container = ReactDOMClient.createRoot(root);
@@ -19,11 +20,13 @@ container.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <GlobalStyle />
-      <ProductsProvider>
-        <CartProvider>
-          <App />
-        </CartProvider>
-      </ProductsProvider>
+      <ErrorBoundary>
+        <ProductsProvider>
+          <CartProvider>
+            <App />
+          </CartProvider>
+        </ProductsProvider>
+      </ErrorBoundary>
     </ThemeProvider>
   </StrictMode>
 );
