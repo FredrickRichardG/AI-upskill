@@ -1,0 +1,43 @@
+keycloak:
+  auth-server-url: ${KEYCLOAK_AUTH_URL:http://localhost:8090}
+  realm: ${KEYCLOAK_REALM:blooddonor_app}
+  resource: ${KEYCLOAK_CLIENT_ID:blooddonor-client}
+  credentials:
+    secret: ${KEYCLOAK_CLIENT_SECRET:pCnJCqQWN4m69tij7boganInEmZ7PR93}
+  ssl-required: external
+  public-client: false
+  principal-attribute: preferred_username
+  use-resource-role-mappings: true
+  confidential-port: 0
+
+spring:
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        enabled: true
+        register: true
+        prefer-ip-address: true
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        service-name: user-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_AUTH_URL:http://localhost:8090}/realms/${KEYCLOAK_REALM:blooddonor_app}
+          jwk-set-uri: ${KEYCLOAK_AUTH_URL:http://localhost:8090}/realms/${KEYCLOAK_REALM:blooddonor_app}/protocol/openid-connect/certs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+
+
+  
