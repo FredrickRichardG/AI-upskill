@@ -8,14 +8,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import reactor.core.publisher.Mono;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 @Component
 public class JwtHeaderFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, org.springframework.cloud.gateway.filter.GatewayFilterChain chain) {
         return exchange.getPrincipal().flatMap(principal -> {
-            if (principal instanceof JwtAuthenticationToken jwtAuth) {
-                var jwt = jwtAuth.getToken();
+            if (principal instanceof JwtAuthenticationToken) {
+                JwtAuthenticationToken jwtAuth = (JwtAuthenticationToken) principal;
+                Jwt jwt = jwtAuth.getToken();
                 ServerHttpRequest mutated = exchange.getRequest().mutate()
                     .header("X-User-Id", jwt.getSubject())
                     .header("X-User-Roles", String.join(",", jwt.getClaimAsStringList("roles")))

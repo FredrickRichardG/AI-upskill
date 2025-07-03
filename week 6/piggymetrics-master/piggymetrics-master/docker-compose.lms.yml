@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: lms-postgres
+    environment:
+      POSTGRES_DB: enrollment_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    command: ["postgres", "-c", "wal_level=logical"]
+
+  redis:
+    image: redis:7
+    container_name: lms-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+  auth-service:
+    build: ./auth-service
+    container_name: lms-auth-service
+    ports:
+      - "9000:9000"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/auth
+    depends_on:
+      - mongo
+    networks:
+      - lms-net
+
+  mongo:
+    image: mongo:6
+    container_name: lms-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+
+  gateway:
+    build: ./gateway
+    container_name: lms-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://auth-service:9000/oauth2/jwks
+      SPRING_REDIS_HOST: redis
+    depends_on:
+      - auth-service
+      - redis
+    networks:
+      - lms-net
+
+  enrollment-service:
+    build: ./enrollment-service
+    container_name: lms-enrollment-service
+    ports:
+      - "9002:9002"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/enrollment_db
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: http://auth-service:9000/oauth2/jwks
+    depends_on:
+      - postgres
+      - auth-service
+    networks:
+      - lms-net
+
+networks:
+  lms-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+  redisdata:
+  mongodata: 
