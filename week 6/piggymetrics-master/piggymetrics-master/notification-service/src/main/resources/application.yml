@@ -1,0 +1,31 @@
+spring:
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+  datasource:
+    url: jdbc:postgresql://localhost:5432/notification_db
+    username: user
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+fcm:
+  service-account-file: classpath:/firebase-service-account.json # Place your FCM service account file here
+
+# RabbitMQ queue for notifications
+notification:
+  queue: notification-queue
+
+# Redis deduplication key prefix
+notification:
+  dedup-prefix: notif:
+  dedup-ttl-seconds: 86400 
