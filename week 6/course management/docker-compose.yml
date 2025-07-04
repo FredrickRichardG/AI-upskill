@@ -1,0 +1,192 @@
+version: '3.8'
+services:
+  user-db:
+    image: postgres:15
+    container_name: user-db
+    environment:
+      POSTGRES_DB: userdb
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+    networks:
+      - lms-net
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - user-db
+      - redis
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - lms-net
+
+  course-db:
+    image: postgres:15
+    container_name: course-db
+    environment:
+      POSTGRES_DB: coursedb
+      POSTGRES_USER: course
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5434:5432"
+    volumes:
+      - course-db-data:/var/lib/postgresql/data
+    networks:
+      - lms-net
+
+  course-service:
+    build: ./course-service
+    container_name: course-service
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - course-db
+      - redis
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - lms-net
+
+  enrollment-db:
+    image: postgres:15
+    container_name: enrollment-db
+    environment:
+      POSTGRES_DB: enrollmentdb
+      POSTGRES_USER: enrollment
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5435:5432"
+    volumes:
+      - enrollment-db-data:/var/lib/postgresql/data
+    networks:
+      - lms-net
+
+  enrollment-service:
+    build: ./enrollment-service
+    container_name: enrollment-service
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - enrollment-db
+      - redis
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - lms-net
+
+  assessment-db:
+    image: postgres:15
+    container_name: assessment-db
+    environment:
+      POSTGRES_DB: assessmentdb
+      POSTGRES_USER: assessment
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5436:5432"
+    volumes:
+      - assessment-db-data:/var/lib/postgresql/data
+    networks:
+      - lms-net
+
+  assessment-service:
+    build: ./assessment-service
+    container_name: assessment-service
+    ports:
+      - "8084:8084"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - assessment-db
+      - redis
+      - rabbitmq
+    restart: on-failure
+    networks:
+      - lms-net
+
+  notification-db:
+    image: postgres:15
+    container_name: notification-db
+    environment:
+      POSTGRES_DB: notificationdb
+      POSTGRES_USER: notification
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5438:5432"
+    networks:
+      - lms-net
+
+  notification-service:
+    build:
+      context: ./notification-service
+    container_name: notification-service
+    depends_on:
+      - notification-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://notification-db:5432/notificationdb
+      SPRING_DATASOURCE_USERNAME: notification
+      SPRING_DATASOURCE_PASSWORD: password
+    ports:
+      - "8085:8085"
+    networks:
+      - lms-net
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8086:8086"
+    networks:
+      - lms-net
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    depends_on:
+      - user-service
+      - course-service
+      - enrollment-service
+      - assessment-service
+      - notification-service
+      - auth-service
+    ports:
+      - "8080:8080"
+    networks:
+      - lms-net
+
+volumes:
+  user-db-data:
+  course-db-data:
+  enrollment-db-data:
+  assessment-db-data:
+
+networks:
+  lms-net:
+    driver: bridge 

@@ -1,0 +1,6 @@
+server:
+  port: 8086
+
+jwt:
+  secret: my-very-secret-key
+  expiration: 86400000 # 1 day in ms 

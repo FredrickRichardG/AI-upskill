@@ -1,0 +1,5 @@
+com\lms\userservice\controller\UserController.class
+com\lms\userservice\model\User.class
+com\lms\userservice\UserServiceApplication.class
+com\lms\userservice\repository\UserRepository.class
+com\lms\userservice\model\User$UserBuilder.class

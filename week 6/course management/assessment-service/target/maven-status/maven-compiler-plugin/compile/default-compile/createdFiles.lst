@@ -1,0 +1,11 @@
+com\lms\assessmentservice\model\Quiz$QuizBuilder.class
+com\lms\assessmentservice\model\Question$QuestionBuilder.class
+com\lms\assessmentservice\model\Question.class
+com\lms\assessmentservice\model\Quiz.class
+com\lms\assessmentservice\repository\QuizRepository.class
+com\lms\assessmentservice\repository\QuestionRepository.class
+com\lms\assessmentservice\model\Submission.class
+com\lms\assessmentservice\controller\AssessmentController.class
+com\lms\assessmentservice\AssessmentServiceApplication.class
+com\lms\assessmentservice\model\Submission$SubmissionBuilder.class
+com\lms\assessmentservice\repository\SubmissionRepository.class

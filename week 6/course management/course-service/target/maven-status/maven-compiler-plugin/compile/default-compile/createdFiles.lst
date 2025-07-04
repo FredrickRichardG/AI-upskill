@@ -1,0 +1,11 @@
+com\lms\courseservice\controller\CourseController.class
+com\lms\courseservice\repository\CourseRepository.class
+com\lms\courseservice\model\Module$ModuleBuilder.class
+com\lms\courseservice\model\Module.class
+com\lms\courseservice\model\Course$CourseBuilder.class
+com\lms\courseservice\model\Lesson$LessonBuilder.class
+com\lms\courseservice\CourseServiceApplication.class
+com\lms\courseservice\model\Lesson.class
+com\lms\courseservice\repository\LessonRepository.class
+com\lms\courseservice\model\Course.class
+com\lms\courseservice\repository\ModuleRepository.class

@@ -1,0 +1,8 @@
+com\lms\notificationservice\controller\NotificationController.class
+com\lms\notificationservice\repository\OutboxRepository.class
+com\lms\notificationservice\model\Outbox$OutboxBuilder.class
+com\lms\notificationservice\model\Outbox.class
+com\lms\notificationservice\model\Template$TemplateBuilder.class
+com\lms\notificationservice\repository\TemplateRepository.class
+com\lms\notificationservice\model\Template.class
+com\lms\notificationservice\NotificationServiceApplication.class

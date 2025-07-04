@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service
+          uri: http://user-service:8081
+          predicates:
+            - Path=/users/**
+        - id: course-service
+          uri: http://course-service:8082
+          predicates:
+            - Path=/courses/**
+        - id: enrollment-service
+          uri: http://enrollment-service:8083
+          predicates:
+            - Path=/enrollments/**
+        - id: assessment-service
+          uri: http://assessment-service:8084
+          predicates:
+            - Path=/assessments/**
+        - id: notification-service
+          uri: http://notification-service:8085
+          predicates:
+            - Path=/notifications/**
+        - id: auth-service
+          uri: http://auth-service:8086
+          predicates:
+            - Path=/auth/**
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret: my-very-secret-key 
