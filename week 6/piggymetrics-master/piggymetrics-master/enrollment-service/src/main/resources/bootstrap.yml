@@ -1,7 +1,0 @@
-spring:
-  application:
-    name: enrollment-service
-  cloud:
-    config:
-      uri: http://config:8888
-      fail-fast: true 
