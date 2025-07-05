@@ -1,9 +1,14 @@
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\config\MessagingConfig.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\config\WebSocketConfig.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\config\WebSocketSecurityConfig.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\CategoryController.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\ContentVersionController.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\CourseController.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\GlobalExceptionHandler.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\InstructorController.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\RealTimeController.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\ResourceController.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\controller\WebSocketController.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\CourseServiceApplication.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\dto\CategoryDto.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\dto\ContentVersionDto.java
@@ -15,8 +20,10 @@ C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lm
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\dto\ModuleDto.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\dto\ResourceDto.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\dto\TagDto.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Announcement.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\AssignmentRole.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Category.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\ChatMessage.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\ContentVersion.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Course.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\CourseAssignment.java
@@ -24,6 +31,8 @@ C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lm
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Instructor.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Lesson.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Module.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\ProgressNotification.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\QuizParticipation.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Resource.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\Tag.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\model\VersionStatus.java
@@ -40,4 +49,5 @@ C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lm
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\service\ContentVersionService.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\service\CourseService.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\service\InstructorService.java
+C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\service\RealTimeService.java
 C:\Users\fredrick.gnanaraj\course management\course-service\src\main\java\com\lms\courseservice\service\ResourceService.java

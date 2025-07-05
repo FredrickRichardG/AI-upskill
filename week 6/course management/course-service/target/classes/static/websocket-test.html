@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Real-time Features Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .section {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .chat-messages, .notifications {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            background: #f9f9f9;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px;
+            background: white;
+            border-radius: 4px;
+        }
+        input, textarea, button {
+            margin: 5px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        .disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>LMS Real-time Features Test</h1>
+    
+    <div id="connectionStatus" class="status disconnected">
+        Disconnected
+    </div>
+    
+    <div class="container">
+        <!-- Chat Section -->
+        <div class="section">
+            <h2>Live Chat</h2>
+            <div>
+                <input type="number" id="courseId" placeholder="Course ID" value="1">
+                <input type="number" id="userId" placeholder="User ID" value="1">
+                <input type="text" id="username" placeholder="Username" value="TestUser">
+                <button onclick="joinChat()">Join Chat</button>
+            </div>
+            <div>
+                <input type="text" id="chatMessage" placeholder="Type your message...">
+                <button onclick="sendChatMessage()">Send</button>
+            </div>
+            <div id="chatMessages" class="chat-messages"></div>
+        </div>
+        
+        <!-- Quiz Section -->
+        <div class="section">
+            <h2>Real-time Quiz</h2>
+            <div>
+                <input type="number" id="quizId" placeholder="Quiz ID" value="1">
+                <button onclick="joinQuiz()">Join Quiz</button>
+                <button onclick="updateQuizProgress()">Update Progress</button>
+                <button onclick="submitQuiz()">Submit Quiz</button>
+            </div>
+            <div id="quizMessages" class="chat-messages"></div>
+        </div>
+        
+        <!-- Announcements Section -->
+        <div class="section">
+            <h2>Announcements</h2>
+            <div>
+                <input type="text" id="announcementTitle" placeholder="Announcement Title">
+                <textarea id="announcementContent" placeholder="Announcement Content"></textarea>
+                <button onclick="sendAnnouncement()">Send Announcement</button>
+            </div>
+            <div id="announcementMessages" class="chat-messages"></div>
+        </div>
+        
+        <!-- Notifications Section -->
+        <div class="section">
+            <h2>Notifications</h2>
+            <div>
+                <input type="text" id="notificationTitle" placeholder="Notification Title">
+                <textarea id="notificationMessage" placeholder="Notification Message"></textarea>
+                <button onclick="sendNotification()">Send Notification</button>
+            </div>
+            <div id="notifications" class="notifications"></div>
+        </div>
+    </div>
+
+    <script>
+        let stompClient = null;
+        let currentCourseId = 1;
+        let currentUserId = 1;
+        let currentUsername = 'TestUser';
+        
+        function connect() {
+            const socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Connected: ' + frame);
+                document.getElementById('connectionStatus').className = 'status connected';
+                document.getElementById('connectionStatus').textContent = 'Connected';
+                
+                // Subscribe to various topics
+                subscribeToTopics();
+            });
+        }
+        
+        function subscribeToTopics() {
+            // Subscribe to chat messages
+            stompClient.subscribe('/topic/chat/' + currentCourseId, function (message) {
+                const chatMessage = JSON.parse(message.body);
+                addChatMessage(chatMessage);
+            });
+            
+            // Subscribe to quiz messages
+            stompClient.subscribe('/topic/quiz/1', function (message) {
+                const quizData = JSON.parse(message.body);
+                addQuizMessage(quizData);
+            });
+            
+            // Subscribe to announcements
+            stompClient.subscribe('/topic/announcements/' + currentCourseId, function (message) {
+                const announcement = JSON.parse(message.body);
+                addAnnouncementMessage(announcement);
+            });
+            
+            // Subscribe to user notifications
+            stompClient.subscribe('/user/' + currentUserId + '/queue/notifications', function (message) {
+                const notification = JSON.parse(message.body);
+                addNotification(notification);
+            });
+        }
+        
+        function joinChat() {
+            currentCourseId = parseInt(document.getElementById('courseId').value);
+            currentUserId = parseInt(document.getElementById('userId').value);
+            currentUsername = document.getElementById('username').value;
+            
+            const chatMessage = {
+                courseId: currentCourseId,
+                userId: currentUserId,
+                username: currentUsername,
+                message: currentUsername + ' joined the chat',
+                type: 'JOIN'
+            };
+            
+            stompClient.send("/app/chat.addUser", {}, JSON.stringify(chatMessage));
+        }
+        
+        function sendChatMessage() {
+            const message = document.getElementById('chatMessage').value;
+            if (message.trim() !== '') {
+                const chatMessage = {
+                    courseId: currentCourseId,
+                    userId: currentUserId,
+                    username: currentUsername,
+                    message: message,
+                    type: 'CHAT'
+                };
+                
+                stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
+                document.getElementById('chatMessage').value = '';
+            }
+        }
+        
+        function joinQuiz() {
+            const quizId = parseInt(document.getElementById('quizId').value);
+            const participation = {
+                quizId: quizId,
+                courseId: currentCourseId,
+                userId: currentUserId,
+                username: currentUsername,
+                status: 'JOINED'
+            };
+            
+            stompClient.send("/app/quiz.join", {}, JSON.stringify(participation));
+        }
+        
+        function updateQuizProgress() {
+            const quizId = parseInt(document.getElementById('quizId').value);
+            const participation = {
+                quizId: quizId,
+                courseId: currentCourseId,
+                userId: currentUserId,
+                username: currentUsername,
+                status: 'IN_PROGRESS',
+                timeRemaining: 300
+            };
+            
+            stompClient.send("/app/quiz.update", {}, JSON.stringify(participation));
+        }
+        
+        function submitQuiz() {
+            const quizId = parseInt(document.getElementById('quizId').value);
+            const participation = {
+                quizId: quizId,
+                courseId: currentCourseId,
+                userId: currentUserId,
+                username: currentUsername,
+                status: 'COMPLETED',
+                score: 85.0
+            };
+            
+            stompClient.send("/app/quiz.complete", {}, JSON.stringify(participation));
+        }
+        
+        function sendAnnouncement() {
+            const title = document.getElementById('announcementTitle').value;
+            const content = document.getElementById('announcementContent').value;
+            
+            if (title.trim() !== '' && content.trim() !== '') {
+                const announcement = {
+                    courseId: currentCourseId,
+                    instructorId: currentUserId,
+                    instructorName: currentUsername,
+                    title: title,
+                    content: content,
+                    type: 'GENERAL',
+                    isUrgent: false
+                };
+                
+                stompClient.send("/app/announcement.send", {}, JSON.stringify(announcement));
+                document.getElementById('announcementTitle').value = '';
+                document.getElementById('announcementContent').value = '';
+            }
+        }
+        
+        function sendNotification() {
+            const title = document.getElementById('notificationTitle').value;
+            const message = document.getElementById('notificationMessage').value;
+            
+            if (title.trim() !== '' && message.trim() !== '') {
+                const notification = {
+                    userId: currentUserId,
+                    courseId: currentCourseId,
+                    title: title,
+                    message: message,
+                    type: 'GENERAL'
+                };
+                
+                // Send via REST API
+                fetch('/api/realtime/notifications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(notification)
+                });
+                
+                document.getElementById('notificationTitle').value = '';
+                document.getElementById('notificationMessage').value = '';
+            }
+        }
+        
+        function addChatMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `<strong>${message.username}</strong>: ${message.message}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        function addQuizMessage(data) {
+            const quizMessages = document.getElementById('quizMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `<strong>Quiz Update</strong>: ${JSON.stringify(data)}`;
+            quizMessages.appendChild(messageDiv);
+            quizMessages.scrollTop = quizMessages.scrollHeight;
+        }
+        
+        function addAnnouncementMessage(announcement) {
+            const announcementMessages = document.getElementById('announcementMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `<strong>${announcement.instructorName}</strong>: ${announcement.title} - ${announcement.content}`;
+            announcementMessages.appendChild(messageDiv);
+            announcementMessages.scrollTop = announcementMessages.scrollHeight;
+        }
+        
+        function addNotification(notification) {
+            const notifications = document.getElementById('notifications');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `<strong>${notification.title}</strong>: ${notification.message}`;
+            notifications.appendChild(messageDiv);
+            notifications.scrollTop = notifications.scrollHeight;
+        }
+        
+        // Connect when page loads
+        window.onload = function() {
+            connect();
+        };
+    </script>
+</body>
+</html> 

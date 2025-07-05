@@ -1,6 +1,7 @@
 com\lms\assessmentservice\model\SubmissionStatus.class
 com\lms\assessmentservice\model\Quiz$QuizBuilder.class
 com\lms\assessmentservice\model\Question$QuestionBuilder.class
+com\lms\assessmentservice\service\RealTimeQuizService.class
 com\lms\assessmentservice\model\Question.class
 com\lms\assessmentservice\repository\QuizRepository.class
 com\lms\assessmentservice\AssessmentServiceApplication.class
