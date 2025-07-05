@@ -3,6 +3,9 @@ C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\co
 C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\model\Question.java
 C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\model\Quiz.java
 C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\model\Submission.java
+C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\model\SubmissionStatus.java
 C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\repository\QuestionRepository.java
 C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\repository\QuizRepository.java
 C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\repository\SubmissionRepository.java
+C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\service\AssessmentAnalyticsService.java
+C:\Users\fredrick.gnanaraj\course management\assessment-service\src\main\java\com\lms\assessmentservice\service\NotificationService.java

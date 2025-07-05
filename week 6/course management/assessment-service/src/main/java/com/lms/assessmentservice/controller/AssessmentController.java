@@ -2,6 +2,7 @@ package com.lms.assessmentservice.controller;
 
 import com.lms.assessmentservice.model.Quiz;
 import com.lms.assessmentservice.model.Submission;
+import com.lms.assessmentservice.model.SubmissionStatus;
 import com.lms.assessmentservice.repository.QuizRepository;
 import com.lms.assessmentservice.repository.SubmissionRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class AssessmentController {
         Optional<Quiz> quizOpt = quizRepository.findById(quizId);
         if (quizOpt.isPresent()) {
             submission.setQuiz(quizOpt.get());
-            submission.setStatus("SUBMITTED");
+            submission.setStatus(SubmissionStatus.SUBMITTED);
             submission.setGradedTs(Instant.now());
             Submission saved = submissionRepository.save(submission);
             return ResponseEntity.ok(saved);
@@ -42,7 +43,7 @@ public class AssessmentController {
         if (submissionOpt.isPresent()) {
             Submission submission = submissionOpt.get();
             submission.setScore(gradeUpdate.getScore());
-            submission.setStatus("GRADED");
+            submission.setStatus(SubmissionStatus.GRADED);
             submission.setGradedTs(Instant.now());
             submissionRepository.save(submission);
             return ResponseEntity.ok(submission);
