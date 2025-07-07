@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.util.Optional;
 
@@ -22,9 +23,14 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @CircuitBreaker(name = "userServiceCB", fallbackMethod = "getUserFallback")
     public ResponseEntity<User> getUser(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         return user.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<User> getUserFallback(Long id, Throwable t) {
+        return ResponseEntity.status(503).build();
     }
 
     @PatchMapping("/{id}/roles")

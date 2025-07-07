@@ -4,3 +4,33 @@ server:
 jwt:
   secret: my-very-secret-key
   expiration: 86400000 # 1 day in ms 
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      authServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+spring:
+  sleuth:
+    sampler:
+      probability: 1.0  # 100% sampling for demo; reduce in production 

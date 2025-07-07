@@ -1,2 +1,3 @@
 com\lms\apigateway\ApiGatewayApplication.class
 com\lms\apigateway\config\SecurityConfig.class
+com\lms\apigateway\FallbackController.class

@@ -16,6 +16,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +41,7 @@ public class CourseService {
     private final ModuleRepository moduleRepository;
     private final LessonRepository lessonRepository;
     private final ResourceRepository resourceRepository;
+    private final WebClient.Builder webClientBuilder;
     
     // Course CRUD Operations
     public CourseDto createCourse(CourseCreateRequest request) {
@@ -417,5 +421,19 @@ public class CourseService {
     
     private Long getTotalResourcesForCourse(Long courseId) {
         return resourceRepository.countByCourseId(courseId);
+    }
+
+    @CircuitBreaker(name = "courseServiceCB", fallbackMethod = "fallbackGetUser")
+    public Mono<String> getUserById(Long userId) {
+        WebClient webClient = webClientBuilder.baseUrl("http://user-service:8081").build();
+        return webClient.get()
+                .uri("/users/" + userId)
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    public Mono<String> fallbackGetUser(Long userId, Throwable t) {
+        log.warn("Fallback triggered for getUserById: {}", t.getMessage());
+        return Mono.just("Dummy user response due to service unavailability");
     }
 } 

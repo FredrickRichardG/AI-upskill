@@ -21,6 +21,9 @@ spring:
         format_sql: true
   main:
     allow-bean-definition-overriding: true
+  sleuth:
+    sampler:
+      probability: 1.0  # 100% sampling for demo; reduce in production
 
 # Redis Configuration
 redis:
@@ -61,4 +64,32 @@ logging:
   level:
     com.lms.assessmentservice: DEBUG
     org.springframework.web.socket: DEBUG
-    org.springframework.messaging: DEBUG 
+    org.springframework.messaging: DEBUG
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      assessmentServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  endpoint:
+    health:
+      show-details: always 

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.util.Collections;
 
@@ -16,10 +17,15 @@ public class AuthController {
     // private final UserClient userClient; // To be implemented for real user validation
 
     @PostMapping("/login")
+    @CircuitBreaker(name = "authServiceCB", fallbackMethod = "loginFallback")
     public Mono<ResponseEntity<AuthResponse>> login(@RequestBody AuthRequest request) {
         // TODO: Validate credentials via User Service (stubbed as always valid for now)
         String token = jwtService.generateToken(request.getUsername(), Collections.singletonList("USER"));
         return Mono.just(ResponseEntity.ok(new AuthResponse(token)));
+    }
+
+    public Mono<ResponseEntity<AuthResponse>> loginFallback(AuthRequest request, Throwable t) {
+        return Mono.just(ResponseEntity.status(503).build());
     }
 
     @PostMapping("/register")

@@ -62,4 +62,31 @@ logging:
     org.springframework.messaging: DEBUG
 
 main:
-  allow-bean-definition-overriding: true 
+  allow-bean-definition-overriding: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      courseServiceCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuitbreakers,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+spring:
+  sleuth:
+    sampler:
+      probability: 1.0  # 100% sampling for demo; reduce in production 

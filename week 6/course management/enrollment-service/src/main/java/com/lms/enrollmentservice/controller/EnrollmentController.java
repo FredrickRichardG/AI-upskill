@@ -7,6 +7,7 @@ import com.lms.enrollmentservice.repository.ProgressRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.time.Instant;
 import java.util.List;
@@ -26,6 +27,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/{id}/progress")
+    @CircuitBreaker(name = "enrollmentServiceCB", fallbackMethod = "getProgressFallback")
     public ResponseEntity<List<Progress>> getProgress(@PathVariable Long id) {
         Optional<Enrollment> enrollment = enrollmentRepository.findById(id);
         if (enrollment.isPresent()) {
@@ -35,6 +37,10 @@ public class EnrollmentController {
             return ResponseEntity.ok(progress);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    public ResponseEntity<List<Progress>> getProgressFallback(Long id, Throwable t) {
+        return ResponseEntity.status(503).build();
     }
 
     @PatchMapping("/{id}/lessons/{lessonId}")

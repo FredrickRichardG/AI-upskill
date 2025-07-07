@@ -8,6 +8,7 @@ import com.lms.assessmentservice.repository.SubmissionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.time.Instant;
 import java.util.Optional;
@@ -32,9 +33,14 @@ public class AssessmentController {
     }
 
     @GetMapping("/submissions/{id}")
+    @CircuitBreaker(name = "assessmentServiceCB", fallbackMethod = "getSubmissionFallback")
     public ResponseEntity<Submission> getSubmission(@PathVariable Long id) {
         Optional<Submission> submission = submissionRepository.findById(id);
         return submission.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    public ResponseEntity<Submission> getSubmissionFallback(Long id, Throwable t) {
+        return ResponseEntity.status(503).build();
     }
 
     @PostMapping("/assignments/{id}/grade")
